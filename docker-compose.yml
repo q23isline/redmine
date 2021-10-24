@@ -1,0 +1,55 @@
+version: '3.5'
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
+
+volumes:
+  db-data:
+    driver: local
+
+services:
+  web:
+    image: nginx:1.17-alpine
+    container_name: web
+    ports:
+      - 80:80
+    volumes:
+      - ./docker/local/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./redmine/:/var/www/html
+    networks:
+      - frontend
+      - backend
+    depends_on:
+      - db
+  app:
+    build: ./docker/local/ruby
+    container_name: app
+    volumes:
+      - ./redmine/:/var/www/html
+      - ./docker/local/ruby/database.yml:/var/www/html/config/database.yml
+      - ./docker/local/ruby/secrets.yml:/var/www/html/config/secrets.yml
+      - ./docker/local/ruby/puma.rb:/var/www/html/config/puma.rb
+    networks:
+      - backend
+    # bundle install : mysql の gem をインストールするために実行する
+    command: bash -c "bundle install && rm -f tmp/pids/server.pid && bundle exec rails s"
+    depends_on:
+      - db
+  db:
+    build: ./docker/local/mysql
+    container_name: db
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_DATABASE=redmine
+      - MYSQL_USER=default
+      - MYSQL_PASSWORD=secret
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - ./docker/local/mysql/init:/docker-entrypoint-initdb.d
+      - db-data:/var/lib/mysql
+    networks:
+      - backend

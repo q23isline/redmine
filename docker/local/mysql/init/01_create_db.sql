@@ -1,0 +1,5 @@
+CREATE DATABASE IF NOT EXISTS redmine CHARACTER SET utf8mb4;
+CREATE DATABASE IF NOT EXISTS redmine_development CHARACTER SET utf8mb4;
+CREATE DATABASE IF NOT EXISTS redmine_test CHARACTER SET utf8mb4;
+CREATE USER 'redmine'@'localhost' IDENTIFIED BY 'root';
+GRANT ALL PRIVILEGES ON redmine.* TO 'redmine'@'localhost';
