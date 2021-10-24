@@ -1,7 +1,6 @@
 # <https://docs.docker.com/samples/rails/>
 FROM ruby:2.7
 
-# RUN apt-get update -qq && apt-get install -y nodejs mysql-client
 RUN apt-get update -qq && apt-get install -y nodejs
 WORKDIR /var/www/html
 COPY Gemfile /var/www/html/Gemfile
