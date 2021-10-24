@@ -3,6 +3,8 @@
 ## はじめにやること
 
 ```bash
+git clone 'https://github.com/q23isline/redmine.git'
+cd redmine
 git clone 'https://github.com/redmine/redmine.git'
 cp redmine/Gemfile docker/local/ruby/Gemfile
 docker-compose build
